@@ -1,0 +1,31 @@
+{
+    "name": "aymardkouakou/orange-api-php",
+    "description": "Orange Api PHP integration",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Aymardkouakou\\OrangeApiPhp\\": "src/",
+            "Aymardkouakou\\OrangeApiPhp\\Tests": "tests/"
+        },
+        "classmap": [
+            "src/"
+        ]
+    },
+    "authors": [
+        {
+            "name": "Aymard Kouakou",
+            "email": "ay.kouakou@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "^7.4",
+        "ext-curl": "*",
+        "ext-json": "*",
+        "symfony/filesystem": "^5.3",
+        "monolog/monolog": "^2.2"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "9"
+    }
+}
