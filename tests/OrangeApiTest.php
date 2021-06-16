@@ -16,9 +16,9 @@ use PHPUnit\Framework\TestCase;
 
 class OrangeApiTest extends TestCase
 {
-    protected string $clientId = 'U9g64qO68IzIjtsaVfA59OaoTNshYyIs';
-    protected string $clientSecret = '4ik8PTwtBYRE2KZK';
-    protected string $senderAdress = '2250748422030';
+    protected string $clientId = 'CLIENT_ID';
+    protected string $clientSecret = 'CLIENT_SECRET';
+    protected string $senderAdress = 'SENDER_ADDRESS';
     protected string $messageLogPath = './log';
     protected string $logPath = './tmp';
 
@@ -69,7 +69,7 @@ class OrangeApiTest extends TestCase
                 $message
             );
 
-            $addresses = ['2250709474609'];
+            $addresses = ['VALID_PHONE'];
 
             foreach ($addresses as $k => $address) {
                 if ($isAuthrozed = $message->isAuthorized()) {
