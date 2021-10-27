@@ -1,5 +1,7 @@
+
 /log/*
 /tmp/*
+/tests/*
 /vendor/*
 
 .git/*

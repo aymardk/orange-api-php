@@ -5,6 +5,8 @@ namespace Aymardkouakou\OrangeApiPhp\Feature;
 use Aymardkouakou\OrangeApiPhp\Core\Authorization;
 use Aymardkouakou\OrangeApiPhp\Core\Endpoints;
 use Aymardkouakou\OrangeApiPhp\Core\Requests;
+use Aymardkouakou\OrangeApiPhp\Model\Data\OutboundSMSMessageRequest;
+use Aymardkouakou\OrangeApiPhp\Model\Data\OutboundSMSTextMessage;
 use Aymardkouakou\OrangeApiPhp\Model\Response\SMSMessageResponse;
 
 class SMSMessage extends OrangeApi

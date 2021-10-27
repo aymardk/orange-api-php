@@ -16,7 +16,7 @@ class OutboundSMSMessageRequest
         if (array_key_exists('senderAddress', $args)) {
             $this->senderAddress = $args['senderAddress'];
         }
-        if (array_key_exists('outboundSMSMessageRequest', $args)) {
+        if (array_key_exists('outboundSMSTextMessage', $args)) {
             $this->outboundSMSTextMessage = new OutboundSMSTextMessage($args['outboundSMSTextMessage']);
         }
     }
