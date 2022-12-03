@@ -16,11 +16,11 @@ use PHPUnit\Framework\TestCase;
 
 class OrangeApiTest extends TestCase
 {
-    protected string $clientId = 'F0TAHPWjC7NHCKZBU9A30kbAJkUdWXhZ'; // U9g64qO68IzIjtsaVfA59OaoTNshYyIs
-    protected string $clientSecret = 'L9FA8aGbFeOcKOgw'; // 4ik8PTwtBYRE2KZK
-    protected string $senderAdress = '2250709474609'; // 2250748422030
-    protected string $messageLogPath = '/Users/mac/Documents/my-projects/orange-api-php/log';
-    protected string $logPath = '/Users/mac/Documents/my-projects/orange-api-php/tmp';
+    protected string $clientId = ''; // TODO: Add correct clientId
+    protected string $clientSecret = ''; // TODO: Add correct clientSecret
+    protected string $senderAdress = '2250000000000'; // TODO: Add correct senderAdress
+    protected string $messageLogPath = '/var/log';
+    protected string $logPath = '/tmp';
 
     /**
      * @return Authorization
