@@ -14,7 +14,12 @@ class Endpoints
 
     public static function getAuthentication(): string
     {
-        return self::getBase() . '/oauth/v3/token';
+        return self::getApiAuthentication('/oauth/v3/token');
+    }
+
+    public static function getApiAuthentication(string $url): string
+    {
+        return self::getBase() . $url;
     }
 
     public static function getSmsMessaging(string $phoneNumber): string

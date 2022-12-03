@@ -18,10 +18,15 @@ class Statistics extends OrangeApi
      * @param $args
      * @return array
      */
-    protected function query($args): array
+    protected function query(array $args): array
     {
         if (!is_array($args)) {
-            throw new \RuntimeException('args must be an array.');
+            if (array_key_exists('country_code', $args)) {
+                $data['country'] = $args['country_code'];
+            }
+            if (array_key_exists('app_id', $args)) {
+                $data['appid'] = $args['app_id'];
+            }
         }
 
         return Requests::call(
@@ -42,9 +47,9 @@ class Statistics extends OrangeApi
      * @return PartnerStatisticResponse
      * @throws \Exception
      */
-    public function check(array $args = []): PartnerStatisticResponse
+    public function check(string $country_code, ?string $app_id = null): PartnerStatisticResponse
     {
         return
-            new PartnerStatisticResponse($this->attempt($args, 200)['response']);
+            new PartnerStatisticResponse($this->attempt(['country_code' => $country_code, 'app_id' => $app_id], 200)['response']);
     }
 }

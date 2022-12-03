@@ -30,7 +30,7 @@ abstract class OrangeApi
         }
     }
 
-    protected abstract function query($args): array;
+    protected abstract function query(array $args): array;
 
     /**
      * @throws \Exception
@@ -43,7 +43,7 @@ abstract class OrangeApi
     /**
      * @throws \Exception
      */
-    protected function attempt($args, int $response_code): array
+    protected function attempt(array $args, int $response_code): array
     {
         $callResponse = $this->query($args);
 

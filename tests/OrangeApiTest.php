@@ -7,7 +7,7 @@ use Aymardkouakou\OrangeApiPhp\Feature\Balance;
 use Aymardkouakou\OrangeApiPhp\Feature\PurchaseHistory;
 use Aymardkouakou\OrangeApiPhp\Feature\SMSMessage;
 use Aymardkouakou\OrangeApiPhp\Feature\Statistics;
-use Aymardkouakou\OrangeApiPhp\Model\Response\PartnerContractResponse;
+use Aymardkouakou\OrangeApiPhp\Model\Response\BalanceResponse;
 use Aymardkouakou\OrangeApiPhp\Model\Response\PartnerStatisticResponse;
 use Aymardkouakou\OrangeApiPhp\Model\Response\PurchaseOrderResponse;
 use Aymardkouakou\OrangeApiPhp\Model\Response\SMSMessageResponse;
@@ -16,11 +16,11 @@ use PHPUnit\Framework\TestCase;
 
 class OrangeApiTest extends TestCase
 {
-    protected string $clientId = 'U9g64qO68IzIjtsaVfA59OaoTNshYyIs';
-    protected string $clientSecret = '4ik8PTwtBYRE2KZK';
-    protected string $senderAdress = '2250748422030';
-    protected string $messageLogPath = './log';
-    protected string $logPath = './tmp';
+    protected string $clientId = '';
+    protected string $clientSecret = '';
+    protected string $senderAdress = '22500000000';
+    protected string $messageLogPath = '/var/log';
+    protected string $logPath = '/tmp';
 
     /**
      * @return Authorization
@@ -69,7 +69,7 @@ class OrangeApiTest extends TestCase
                 $message
             );
 
-            $addresses = ['2250709474609', '2250101668386'];
+            $addresses = ['2250101668386'];
 
             foreach ($addresses as $k => $address) {
                 if ($isAuthrozed = $message->isAuthorized()) {
@@ -78,7 +78,8 @@ class OrangeApiTest extends TestCase
                     $response = $message
                         ->withSenderAddress($this->senderAdress)
                         ->withAddress($address)
-                        ->send(sprintf("Welcome #%s", $k + 1));
+                        ->withSenderName("WEB2SMS")
+                        ->send(sprintf("Welcome #%s. Juste un test d'envoi", $k + 1));
 
                     $this->assertInstanceOf(
                         SMSMessageResponse::class,
@@ -103,10 +104,10 @@ class OrangeApiTest extends TestCase
             if ($isAuthrozed = $balance->isAuthorized()) {
                 $this->assertIsBool($isAuthrozed);
 
-                $response = $balance->check();
+                $response = $balance->check('CIV');
 
                 $this->assertInstanceOf(
-                    PartnerContractResponse::class,
+                    BalanceResponse::class,
                     $response
                 );
             }
@@ -127,7 +128,7 @@ class OrangeApiTest extends TestCase
             if ($isAuthrozed = $statistics->isAuthorized()) {
                 $this->assertIsBool($isAuthrozed);
 
-                $response = $statistics->check(['country_code' => 'CIV']);
+                $response = $statistics->check('CIV', 'LBjqup2ai1CJFMRC');
 
                 $this->assertInstanceOf(
                     PartnerStatisticResponse::class,

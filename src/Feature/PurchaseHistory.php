@@ -14,12 +14,14 @@ class PurchaseHistory extends OrangeApi
         parent::__construct($authorization, $logPath);
     }
 
-    protected function query($args): array
+    protected function query(array $args): array
     {
         $data = [];
 
         if ($args !== null) {
-            $data['country_code'] = $args;
+            if (array_key_exists('country_code', $args)) {
+                $data['country'] = $args['country_code'];
+            }
         }
 
         return Requests::call(
@@ -44,7 +46,7 @@ class PurchaseHistory extends OrangeApi
     {
         return
             new PurchaseOrderResponse(
-                $this->attempt($country_code, 200)['response']
+                $this->attempt(['country_code' => $country_code], 200)['response']
             );
     }
 }

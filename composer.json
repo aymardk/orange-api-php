@@ -6,7 +6,7 @@
     "autoload": {
         "psr-4": {
             "Aymardkouakou\\OrangeApiPhp\\": "src/",
-            "Aymardkouakou\\OrangeApiPhp\\Tests": "tests/"
+            "Aymardkouakou\\OrangeApiPhp\\Tests\\": "tests/"
         },
         "classmap": [
             "src/"

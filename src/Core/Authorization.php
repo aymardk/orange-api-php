@@ -21,7 +21,7 @@ class Authorization
      * @param bool $verifyPeerSsl
      * @param string $logPath
      */
-    public function __construct(string $clientId, string $clientSecret, bool $verifyPeerSsl = true, string $logPath = './tmp')
+    public function __construct(string $clientId, string $clientSecret, bool $verifyPeerSsl = true, string $logPath = 'tmp')
     {
         $this->logPath = sprintf("%s/%s/%s", $logPath, $clientId, $this->logPathName);
 
@@ -79,7 +79,7 @@ class Authorization
                 $this->verifyPeerSsl
             );
 
-            if ($callResponse['code'] !== 200) {
+            if ((int)$callResponse['code'] !== 200) {
                 throw new \RuntimeException('There is an error!');
             }
 

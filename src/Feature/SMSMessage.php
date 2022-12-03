@@ -5,13 +5,12 @@ namespace Aymardkouakou\OrangeApiPhp\Feature;
 use Aymardkouakou\OrangeApiPhp\Core\Authorization;
 use Aymardkouakou\OrangeApiPhp\Core\Endpoints;
 use Aymardkouakou\OrangeApiPhp\Core\Requests;
-use Aymardkouakou\OrangeApiPhp\Model\Data\OutboundSMSMessageRequest;
-use Aymardkouakou\OrangeApiPhp\Model\Data\OutboundSMSTextMessage;
 use Aymardkouakou\OrangeApiPhp\Model\Response\SMSMessageResponse;
 
 class SMSMessage extends OrangeApi
 {
     protected ?string $address = null;
+    protected ?string $senderName = null;
     protected ?string $senderAddress = null;
 
     public function __construct(Authorization $authorization, string $logPath = null)
@@ -19,14 +18,15 @@ class SMSMessage extends OrangeApi
         parent::__construct($authorization, $logPath);
     }
 
-    protected function query($args): array
+    protected function query(array $args): array
     {
         $data = json_encode([
             'outboundSMSMessageRequest' => [
                 'address' => "tel:+$this->address",
+                'senderName' => $this->senderName,
                 'senderAddress' => "tel:+$this->senderAddress",
                 'outboundSMSTextMessage' => [
-                    'message' => $args
+                    'message' => $args['message']
                 ]
             ]
         ], JSON_FORCE_OBJECT);
@@ -36,9 +36,9 @@ class SMSMessage extends OrangeApi
             Endpoints::getSmsMessaging($this->senderAddress),
             $data,
             [
-                'Content-Type: application/json',
-                'Content-Length: ' . strlen($data),
-                'Authorization: ' . $this->authorization->getTokenType() . ' ' . $this->authorization->getAccessToken()
+                "Content-Type: application/json",
+                sprintf("Content-Length: %s", strlen($data)),
+                sprintf("Authorization: %s %s", $this->authorization->getTokenType(), $this->authorization->getAccessToken()),
             ],
             $this->authorization->getVerifyPeerSsl(),
             $this->logger
@@ -57,6 +57,12 @@ class SMSMessage extends OrangeApi
         return $this;
     }
 
+    public function withSenderName(string $senderName): SMSMessage
+    {
+        $this->senderName = $senderName;
+        return $this;
+    }
+
     /**
      * @param string $message
      * @return SMSMessageResponse
@@ -70,7 +76,7 @@ class SMSMessage extends OrangeApi
 
         return
             new SMSMessageResponse(
-                $this->attempt($message, 201)['response']
+                $this->attempt(['message' => $message], 201)['response']
             );
     }
 }

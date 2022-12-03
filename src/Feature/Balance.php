@@ -5,6 +5,7 @@ namespace Aymardkouakou\OrangeApiPhp\Feature;
 use Aymardkouakou\OrangeApiPhp\Core\Authorization;
 use Aymardkouakou\OrangeApiPhp\Core\Endpoints;
 use Aymardkouakou\OrangeApiPhp\Core\Requests;
+use Aymardkouakou\OrangeApiPhp\Model\Response\BalanceResponse;
 use Aymardkouakou\OrangeApiPhp\Model\Response\PartnerContractResponse;
 
 class Balance extends OrangeApi
@@ -14,12 +15,13 @@ class Balance extends OrangeApi
         parent::__construct($authorization, $logPath);
     }
 
-    protected function query($args): array
+    protected function query(array $args): array
     {
         $data = [];
-
         if ($args !== null) {
-            $data['country_code'] = $args;
+            if (array_key_exists('country_code', $args)) {
+                $data['country'] = $args['country_code'];
+            }
         }
 
         return Requests::call(
@@ -37,14 +39,14 @@ class Balance extends OrangeApi
 
     /**
      * @param string|null $country_code
-     * @return PartnerContractResponse
+     * @return BalanceResponse
      * @throws \Exception
      */
-    public function check(string $country_code = null): PartnerContractResponse
+    public function check(string $country_code = null): BalanceResponse
     {
         return
-            new PartnerContractResponse(
-                $this->attempt($country_code, 200)['response']
+            new BalanceResponse(
+                $this->attempt(['country_code' => $country_code], 200)['response']
             );
     }
 }
