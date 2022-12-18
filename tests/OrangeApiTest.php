@@ -7,6 +7,9 @@ use Aymardkouakou\OrangeApiPhp\Feature\Balance;
 use Aymardkouakou\OrangeApiPhp\Feature\PurchaseHistory;
 use Aymardkouakou\OrangeApiPhp\Feature\SMSMessage;
 use Aymardkouakou\OrangeApiPhp\Feature\Statistics;
+use Aymardkouakou\OrangeApiPhp\Model\Data\BalanceData;
+use Aymardkouakou\OrangeApiPhp\Model\Data\PartnerStatistic;
+use Aymardkouakou\OrangeApiPhp\Model\Data\PurchaseOrder;
 use Aymardkouakou\OrangeApiPhp\Model\Response\BalanceResponse;
 use Aymardkouakou\OrangeApiPhp\Model\Response\PartnerStatisticResponse;
 use Aymardkouakou\OrangeApiPhp\Model\Response\PurchaseOrderResponse;
@@ -16,11 +19,12 @@ use PHPUnit\Framework\TestCase;
 
 class OrangeApiTest extends TestCase
 {
-    protected string $clientId = ''; // TODO: Add correct clientId
-    protected string $clientSecret = ''; // TODO: Add correct clientSecret
-    protected string $senderAdress = '2250000000000'; // TODO: Add correct senderAdress
-    protected string $messageLogPath = '/var/log';
-    protected string $logPath = '/tmp';
+    protected string $appId = 'LBjqup2ai1CJFMRC'; // TODO: Add correct appId
+    protected string $clientId = 'F0TAHPWjC7NHCKZBU9A30kbAJkUdWXhZ'; // TODO: Add correct clientId
+    protected string $clientSecret = 'L9FA8aGbFeOcKOgw'; // TODO: Add correct clientSecret
+    protected string $senderAdress = '2250709474609'; // TODO: Add correct senderAdress
+    protected string $messageLogPath = '/Users/mac/Documents/my-projects/orange-api-php/tests/log';
+    protected string $logPath = '/Users/mac/Documents/my-projects/orange-api-php/tests/tmp';
 
     /**
      * @return Authorization
@@ -38,18 +42,22 @@ class OrangeApiTest extends TestCase
 
     public function testCredentials(): void
     {
+        $this->assertIsString($this->appId);
         $this->assertIsString($this->clientId);
         $this->assertIsString($this->clientSecret);
+        $this->assertIsString($this->senderAdress);
     }
 
     public function testLogPath(): void
     {
         $this->assertDirectoryExists($this->logPath);
+        $this->assertDirectoryIsWritable($this->logPath);
     }
 
     public function testMessageLogPath(): void
     {
         $this->assertDirectoryExists($this->messageLogPath);
+        $this->assertDirectoryIsWritable($this->messageLogPath);
     }
 
     public function testAuthorization(): void
@@ -72,20 +80,17 @@ class OrangeApiTest extends TestCase
             $addresses = ['2250101668386'];
 
             foreach ($addresses as $k => $address) {
-                if ($isAuthrozed = $message->isAuthorized()) {
-                    $this->assertIsBool($isAuthrozed);
+                $this->assertIsBool($message->isAuthorized());
+                $response = $message
+                    ->withSenderAddress($this->senderAdress)
+                    ->withAddress($address)
+                    ->withSenderName("WEB2SMS")
+                    ->send("Welcome guy. Juste un test d'envoi");
 
-                    $response = $message
-                        ->withSenderAddress($this->senderAdress)
-                        ->withAddress($address)
-                        ->withSenderName("WEB2SMS")
-                        ->send(sprintf("Welcome #%s. Juste un test d'envoi", $k + 1));
-
-                    $this->assertInstanceOf(
-                        SMSMessageResponse::class,
-                        $response
-                    );
-                }
+                $this->assertInstanceOf(
+                    SMSMessageResponse::class,
+                    $response
+                );
             }
         } catch (Exception $e) {
             $this->expectError();
@@ -101,16 +106,20 @@ class OrangeApiTest extends TestCase
                 $balance
             );
 
-            if ($isAuthrozed = $balance->isAuthorized()) {
-                $this->assertIsBool($isAuthrozed);
+            $this->assertIsBool($balance->isAuthorized());
+            $response = $balance->check('CIV');
 
-                $response = $balance->check('CIV');
+            $this->assertInstanceOf(
+                BalanceResponse::class,
+                $response
+            );
 
-                $this->assertInstanceOf(
-                    BalanceResponse::class,
-                    $response
-                );
-            }
+            $this->assertInstanceOf(
+                BalanceData::class,
+                $response->balance
+            );
+
+            $this->assertIsInt($response->balance->availableUnits);
         } catch (Exception $e) {
             $this->expectError();
         }
@@ -128,12 +137,19 @@ class OrangeApiTest extends TestCase
             if ($isAuthrozed = $statistics->isAuthorized()) {
                 $this->assertIsBool($isAuthrozed);
 
-                $response = $statistics->check('CIV', 'LBjqup2ai1CJFMRC');
+                $response = $statistics->check('CIV', $this->appId);
 
                 $this->assertInstanceOf(
                     PartnerStatisticResponse::class,
                     $response
                 );
+
+                $this->assertInstanceOf(
+                    PartnerStatistic::class,
+                    $response->partnerStatistics
+                );
+
+                $this->assertIsString($response->partnerStatistics->developerId);
             }
         } catch (Exception $e) {
             $this->expectError();
@@ -158,6 +174,17 @@ class OrangeApiTest extends TestCase
                     PurchaseOrderResponse::class,
                     $response
                 );
+
+                $this->assertIsArray(
+                    $response->purchaseOrders
+                );
+
+                foreach ($response->purchaseOrders as $purchaseOrder) {
+                    $this->assertInstanceOf(
+                        PurchaseOrder::class,
+                        $purchaseOrder
+                    );
+                }
             }
         } catch (Exception $e) {
             $this->expectError();

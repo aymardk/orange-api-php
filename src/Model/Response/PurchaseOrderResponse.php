@@ -10,10 +10,8 @@ class PurchaseOrderResponse
 
     public function __construct(array $args = [])
     {
-        if (array_key_exists('purchaseOrders', $args)) {
-            foreach ($args['purchaseOrders'] as $purchaseOrder) {
-                $this->purchaseOrders[] = new PurchaseOrder($purchaseOrder);
-            }
+        foreach ($args as $arg) {
+            $this->purchaseOrders[] = new PurchaseOrder($arg);
         }
     }
 }

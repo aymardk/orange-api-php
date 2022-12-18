@@ -13,6 +13,8 @@ class SMSMessage extends OrangeApi
     protected ?string $senderName = null;
     protected ?string $senderAddress = null;
 
+    private array $request;
+
     public function __construct(Authorization $authorization, string $logPath = null)
     {
         parent::__construct($authorization, $logPath);
@@ -20,15 +22,20 @@ class SMSMessage extends OrangeApi
 
     protected function query(array $args): array
     {
-        $data = json_encode([
-            'outboundSMSMessageRequest' => [
-                'address' => "tel:+$this->address",
-                'senderName' => $this->senderName,
-                'senderAddress' => "tel:+$this->senderAddress",
-                'outboundSMSTextMessage' => [
-                    'message' => $args['message']
-                ]
+        $this->request = [
+            'senderAddress' => "tel:+$this->senderAddress",
+            'address' => "tel:+$this->address",
+            'outboundSMSTextMessage' => [
+                'message' => $args['message']
             ]
+        ];
+
+        if ($this->senderName !== null) {
+            $this->request['senderName'] = $this->senderName;
+        }
+
+        $data = json_encode([
+            'outboundSMSMessageRequest' => $this->request
         ], JSON_FORCE_OBJECT);
 
         return Requests::call(

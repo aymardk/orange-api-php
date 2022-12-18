@@ -31,18 +31,18 @@ class Endpoints
             );
     }
 
-    public static function getContracts(): string
+    public static function getContracts(string $endpoint = '/sms/admin/v1/contracts'): string
     {
-        return self::getBase() . '/sms/admin/v1/contracts';
+        return self::getBase() . $endpoint;
     }
 
-    public static function getStatistics(): string
+    public static function getStatistics(string $endpoint = '/sms/admin/v1/statistics'): string
     {
-        return self::getBase() . '/sms/admin/v1/statistics';
+        return self::getBase() . $endpoint;
     }
 
-    public static function getPurchaseOrders(): string
+    public static function getPurchaseOrders(string $endpoint = '/sms/admin/v1/purchaseorders'): string
     {
-        return self::getBase() . '/sms/admin/v1/purchaseorders';
+        return self::getBase() . $endpoint;
     }
 }

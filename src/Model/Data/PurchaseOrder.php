@@ -4,21 +4,41 @@ namespace Aymardkouakou\OrangeApiPhp\Model\Data;
 
 class PurchaseOrder
 {
-    public ?string $purchaseOrderId;
-    public ?string $mode;
+    public ?string $id;
+    public ?string $developerId;
+    public ?string $contractId;
+    public ?string $country;
+    public ?string $offerName;
     public ?string $bundleId;
     public ?string $bundleDescription;
-    public ?string $partnerId;
-    public ?array $inputs = [];
-    public ?OrderExecutionInformation $orderExecutioninformation;
+    public ?int $price;
+    public ?string $currency;
+    public ?string $purchaseDate;
+    public ?string $paymentMode;
+    public ?string $paymentProviderOrderId;
+    public ?string $payerId;
+    public ?string $type;
+    public ?int $oldAvailableUnits;
+    public ?int $newAvailableUnits;
+    public ?string $oldExpirationDate;
+    public ?string $newExpirationDate;
 
     public function __construct(array $args = [])
     {
-        if (array_key_exists('purchaseOrderId', $args)) {
-            $this->purchaseOrderId = $args['purchaseOrderId'];
+        if (array_key_exists('id', $args)) {
+            $this->id = $args['id'];
         }
-        if (array_key_exists('mode', $args)) {
-            $this->mode = $args['mode'];
+        if (array_key_exists('developerId', $args)) {
+            $this->developerId = $args['developerId'];
+        }
+        if (array_key_exists('contractId', $args)) {
+            $this->contractId = $args['contractId'];
+        }
+        if (array_key_exists('country', $args)) {
+            $this->country = $args['country'];
+        }
+        if (array_key_exists('offerName', $args)) {
+            $this->offerName = $args['offerName'];
         }
         if (array_key_exists('bundleId', $args)) {
             $this->bundleId = $args['bundleId'];
@@ -26,16 +46,38 @@ class PurchaseOrder
         if (array_key_exists('bundleDescription', $args)) {
             $this->bundleDescription = $args['bundleDescription'];
         }
-        if (array_key_exists('partnerId', $args)) {
-            $this->partnerId = $args['partnerId'];
+        if (array_key_exists('price', $args)) {
+            $this->price = $args['price'];
         }
-        if (array_key_exists('inputs', $args)) {
-            foreach ($args['inputs'] as $input) {
-                $this->inputs[] = new OrderInput($input);
-            }
+        if (array_key_exists('currency', $args)) {
+            $this->currency = $args['currency'];
         }
-        if (array_key_exists('orderExecutioninformation', $args)) {
-            $this->orderExecutioninformation = new OrderExecutionInformation($args['orderExecutioninformation']);
+        if (array_key_exists('purchaseDate', $args)) {
+            $this->purchaseDate = $args['purchaseDate'];
+        }
+        if (array_key_exists('paymentMode', $args)) {
+            $this->paymentMode = $args['paymentMode'];
+        }
+        if (array_key_exists('paymentProviderOrderId', $args)) {
+            $this->paymentProviderOrderId = $args['paymentProviderOrderId'];
+        }
+        if (array_key_exists('payerId', $args)) {
+            $this->payerId = $args['payerId'];
+        }
+        if (array_key_exists('type', $args)) {
+            $this->type = $args['type'];
+        }
+        if (array_key_exists('oldAvailableUnits', $args)) {
+            $this->oldAvailableUnits = $args['oldAvailableUnits'];
+        }
+        if (array_key_exists('newAvailableUnits', $args)) {
+            $this->newAvailableUnits = $args['newAvailableUnits'];
+        }
+        if (array_key_exists('oldExpirationDate', $args)) {
+            $this->oldExpirationDate = $args['oldExpirationDate'];
+        }
+        if (array_key_exists('newExpirationDate', $args)) {
+            $this->newExpirationDate = $args['newExpirationDate'];
         }
     }
 }
