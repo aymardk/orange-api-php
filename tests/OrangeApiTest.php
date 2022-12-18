@@ -19,12 +19,12 @@ use PHPUnit\Framework\TestCase;
 
 class OrangeApiTest extends TestCase
 {
-    protected string $appId = 'LBjqup2ai1CJFMRC'; // TODO: Add correct appId
-    protected string $clientId = 'F0TAHPWjC7NHCKZBU9A30kbAJkUdWXhZ'; // TODO: Add correct clientId
-    protected string $clientSecret = 'L9FA8aGbFeOcKOgw'; // TODO: Add correct clientSecret
-    protected string $senderAdress = '2250709474609'; // TODO: Add correct senderAdress
-    protected string $messageLogPath = '/Users/mac/Documents/my-projects/orange-api-php/tests/log';
-    protected string $logPath = '/Users/mac/Documents/my-projects/orange-api-php/tests/tmp';
+    protected string $appId = ''; // TODO: Add correct appId
+    protected string $clientId = ''; // TODO: Add correct clientId
+    protected string $clientSecret = ''; // TODO: Add correct clientSecret
+    protected string $senderAdress = ''; // TODO: Add correct senderAdress
+    protected string $messageLogPath = 'log';
+    protected string $logPath = 'tmp';
 
     /**
      * @return Authorization
