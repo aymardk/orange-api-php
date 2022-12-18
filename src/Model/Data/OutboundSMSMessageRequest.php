@@ -1,6 +1,6 @@
 <?php
 
-namespace Aymardkouakou\OrangeApiPhp\Model\Data;
+namespace Aymardk\OrangeApiPhp\Model\Data;
 
 class OutboundSMSMessageRequest
 {

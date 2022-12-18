@@ -1,6 +1,6 @@
 <?php
 
-namespace Aymardkouakou\OrangeApiPhp\Model\Response;
+namespace Aymardk\OrangeApiPhp\Model\Response;
 
 use Aymardkouakou\OrangeApiPhp\Model\Data\PartnerContract;
 

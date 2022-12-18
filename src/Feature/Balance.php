@@ -1,12 +1,11 @@
 <?php
 
-namespace Aymardkouakou\OrangeApiPhp\Feature;
+namespace Aymardk\OrangeApiPhp\Feature;
 
-use Aymardkouakou\OrangeApiPhp\Core\Authorization;
-use Aymardkouakou\OrangeApiPhp\Core\Endpoints;
-use Aymardkouakou\OrangeApiPhp\Core\Requests;
-use Aymardkouakou\OrangeApiPhp\Model\Response\BalanceResponse;
-use Aymardkouakou\OrangeApiPhp\Model\Response\PartnerContractResponse;
+use Aymardk\OrangeApiPhp\Core\Authorization;
+use Aymardk\OrangeApiPhp\Core\Endpoints;
+use Aymardk\OrangeApiPhp\Core\Requests;
+use Aymardk\OrangeApiPhp\Model\Response\BalanceResponse;
 
 class Balance extends OrangeApi
 {

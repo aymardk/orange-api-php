@@ -5,8 +5,8 @@
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "Aymardkouakou\\OrangeApiPhp\\": "src/",
-            "Aymardkouakou\\OrangeApiPhp\\Tests\\": "tests/"
+            "Aymardk\\OrangeApiPhp\\": "src/",
+            "Aymardk\\OrangeApiPhp\\Tests\\": "tests/"
         },
         "classmap": [
             "src/"

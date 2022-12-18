@@ -1,3 +1,6 @@
 {
-  "cSpell.enableFiletypes": ["!php"]
+  "cSpell.enableFiletypes": [
+    "!json",
+    "!php"
+  ]
 }

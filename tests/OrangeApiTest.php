@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Aymardkouakou\OrangeApiPhp\Tests;
+namespace Aymardk\OrangeApiPhp\Tests;
 
 use Aymardkouakou\OrangeApiPhp\Core\Authorization;
 use Aymardkouakou\OrangeApiPhp\Feature\Balance;

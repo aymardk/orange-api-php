@@ -1,6 +1,6 @@
 <?php
 
-namespace Aymardkouakou\OrangeApiPhp\Core;
+namespace Aymardk\OrangeApiPhp\Core;
 
 class Endpoints
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Aymardkouakou\OrangeApiPhp\Core;
+namespace Aymardk\OrangeApiPhp\Core;
 
 use Symfony\Component\Filesystem\Filesystem;
 

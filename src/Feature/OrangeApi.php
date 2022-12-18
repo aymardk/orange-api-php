@@ -1,6 +1,6 @@
 <?php
 
-namespace Aymardkouakou\OrangeApiPhp\Feature;
+namespace Aymardk\OrangeApiPhp\Feature;
 
 use Aymardkouakou\OrangeApiPhp\Core\Authorization;
 use Monolog\Handler\FirePHPHandler;
