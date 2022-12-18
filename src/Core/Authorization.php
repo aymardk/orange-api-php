@@ -2,6 +2,7 @@
 
 namespace Aymardk\OrangeApiPhp\Core;
 
+use Aymardk\OrangeApiPhp\Core\File;
 use Symfony\Component\Filesystem\Filesystem;
 
 class Authorization
