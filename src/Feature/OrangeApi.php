@@ -2,7 +2,7 @@
 
 namespace Aymardk\OrangeApiPhp\Feature;
 
-use Aymardkouakou\OrangeApiPhp\Core\Authorization;
+use Aymardk\OrangeApiPhp\Core\Authorization;
 use Monolog\Handler\FirePHPHandler;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;

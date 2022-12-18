@@ -2,7 +2,7 @@
 
 namespace Aymardk\OrangeApiPhp\Model\Response;
 
-use Aymardkouakou\OrangeApiPhp\Model\Data\BalanceData;
+use Aymardk\OrangeApiPhp\Model\Data\BalanceData;
 
 class BalanceResponse
 {

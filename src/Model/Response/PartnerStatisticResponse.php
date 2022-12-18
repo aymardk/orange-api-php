@@ -2,7 +2,7 @@
 
 namespace Aymardk\OrangeApiPhp\Model\Response;
 
-use Aymardkouakou\OrangeApiPhp\Model\Data\PartnerStatistic;
+use Aymardk\OrangeApiPhp\Model\Data\PartnerStatistic;
 
 class PartnerStatisticResponse
 {

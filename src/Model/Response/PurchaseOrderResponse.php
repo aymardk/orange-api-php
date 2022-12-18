@@ -2,7 +2,7 @@
 
 namespace Aymardk\OrangeApiPhp\Model\Response;
 
-use Aymardkouakou\OrangeApiPhp\Model\Data\PurchaseOrder;
+use Aymardk\OrangeApiPhp\Model\Data\PurchaseOrder;
 
 class PurchaseOrderResponse
 {

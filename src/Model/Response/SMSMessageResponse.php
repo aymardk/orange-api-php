@@ -2,7 +2,7 @@
 
 namespace Aymardk\OrangeApiPhp\Model\Response;
 
-use Aymardkouakou\OrangeApiPhp\Model\Data\OutboundSMSMessageRequest;
+use Aymardk\OrangeApiPhp\Model\Data\OutboundSMSMessageRequest;
 
 class SMSMessageResponse
 {

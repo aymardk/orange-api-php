@@ -2,18 +2,18 @@
 
 namespace Aymardk\OrangeApiPhp\Tests;
 
-use Aymardkouakou\OrangeApiPhp\Core\Authorization;
-use Aymardkouakou\OrangeApiPhp\Feature\Balance;
-use Aymardkouakou\OrangeApiPhp\Feature\PurchaseHistory;
-use Aymardkouakou\OrangeApiPhp\Feature\SMSMessage;
-use Aymardkouakou\OrangeApiPhp\Feature\Statistics;
-use Aymardkouakou\OrangeApiPhp\Model\Data\BalanceData;
-use Aymardkouakou\OrangeApiPhp\Model\Data\PartnerStatistic;
-use Aymardkouakou\OrangeApiPhp\Model\Data\PurchaseOrder;
-use Aymardkouakou\OrangeApiPhp\Model\Response\BalanceResponse;
-use Aymardkouakou\OrangeApiPhp\Model\Response\PartnerStatisticResponse;
-use Aymardkouakou\OrangeApiPhp\Model\Response\PurchaseOrderResponse;
-use Aymardkouakou\OrangeApiPhp\Model\Response\SMSMessageResponse;
+use Aymardk\OrangeApiPhp\Core\Authorization;
+use Aymardk\OrangeApiPhp\Feature\Balance;
+use Aymardk\OrangeApiPhp\Feature\PurchaseHistory;
+use Aymardk\OrangeApiPhp\Feature\SMSMessage;
+use Aymardk\OrangeApiPhp\Feature\Statistics;
+use Aymardk\OrangeApiPhp\Model\Data\BalanceData;
+use Aymardk\OrangeApiPhp\Model\Data\PartnerStatistic;
+use Aymardk\OrangeApiPhp\Model\Data\PurchaseOrder;
+use Aymardk\OrangeApiPhp\Model\Response\BalanceResponse;
+use Aymardk\OrangeApiPhp\Model\Response\PartnerStatisticResponse;
+use Aymardk\OrangeApiPhp\Model\Response\PurchaseOrderResponse;
+use Aymardk\OrangeApiPhp\Model\Response\SMSMessageResponse;
 use Exception;
 use PHPUnit\Framework\TestCase;
 
@@ -77,7 +77,7 @@ class OrangeApiTest extends TestCase
                 $message
             );
 
-            $addresses = ['2250101668386'];
+            $addresses = ['']; // Array of numbers to test
 
             foreach ($addresses as $k => $address) {
                 $this->assertIsBool($message->isAuthorized());

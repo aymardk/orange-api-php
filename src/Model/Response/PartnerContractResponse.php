@@ -2,7 +2,7 @@
 
 namespace Aymardk\OrangeApiPhp\Model\Response;
 
-use Aymardkouakou\OrangeApiPhp\Model\Data\PartnerContract;
+use Aymardk\OrangeApiPhp\Model\Data\PartnerContract;
 
 class PartnerContractResponse
 {

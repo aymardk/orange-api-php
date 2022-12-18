@@ -2,10 +2,10 @@
 
 namespace Aymardk\OrangeApiPhp\Feature;
 
-use Aymardkouakou\OrangeApiPhp\Core\Authorization;
-use Aymardkouakou\OrangeApiPhp\Core\Endpoints;
-use Aymardkouakou\OrangeApiPhp\Core\Requests;
-use Aymardkouakou\OrangeApiPhp\Model\Response\SMSMessageResponse;
+use Aymardk\OrangeApiPhp\Core\Authorization;
+use Aymardk\OrangeApiPhp\Core\Endpoints;
+use Aymardk\OrangeApiPhp\Core\Requests;
+use Aymardk\OrangeApiPhp\Model\Response\SMSMessageResponse;
 
 class SMSMessage extends OrangeApi
 {
