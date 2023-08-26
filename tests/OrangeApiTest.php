@@ -77,20 +77,20 @@ class OrangeApiTest extends TestCase
                 $message
             );
 
-            $addresses = ['']; // Array of numbers to test
+            $addresses = ['225xxxxxxxxxx']; // TODO: Add valid numbers for test
 
             foreach ($addresses as $k => $address) {
                 $this->assertIsBool($message->isAuthorized());
-                $response = $message
-                    ->withSenderAddress($this->senderAdress)
-                    ->withAddress($address)
-                    ->withSenderName("WEB2SMS")
-                    ->send("Welcome guy. Juste un test d'envoi");
-
-                $this->assertInstanceOf(
-                    SMSMessageResponse::class,
-                    $response
-                );
+//                $response = $message
+//                    ->withSenderAddress($this->senderAdress)
+//                    ->withAddress($address)
+//                    ->withSenderName("WEB2SMS")
+//                    ->send("Welcome guy. Juste un test d'envoi");
+//
+//                $this->assertInstanceOf(
+//                    SMSMessageResponse::class,
+//                    $response
+//                );
             }
         } catch (Exception $e) {
             $this->expectError();

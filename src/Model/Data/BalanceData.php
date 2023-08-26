@@ -26,7 +26,7 @@ class BalanceData
             $this->type = $args['type'];
         }
         if (array_key_exists('developerId', $args)) {
-            $this->developerId= $args['developerId'];
+            $this->developerId = $args['developerId'];
         }
         if (array_key_exists('applicationId', $args)) {
             $this->applicationId = $args['applicationId'];
