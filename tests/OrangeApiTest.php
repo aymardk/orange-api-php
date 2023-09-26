@@ -19,10 +19,10 @@ use PHPUnit\Framework\TestCase;
 
 class OrangeApiTest extends TestCase
 {
-    protected string $appId = 'IPdJhYEDkDugmy01'; // TODO: Add correct appId
-    protected string $clientId = 'x55DPgDR7ypzRCK9Lo4kGAAhuNXlttKK'; // TODO: Add correct clientId
-    protected string $clientSecret = 'BzWVchEXK6ZwAgAI'; // TODO: Add correct clientSecret
-    protected string $senderAdress = '2250709474609'; // TODO: Add correct senderAdress
+    protected string $appId = ''; // TODO: Add correct appId
+    protected string $clientId = ''; // TODO: Add correct clientId
+    protected string $clientSecret = ''; // TODO: Add correct clientSecret
+    protected string $senderAdress = '225xxxxxxxxxx'; // TODO: Add correct senderAdress
     protected string $messageLogPath = 'log';
     protected string $logPath = 'tmp';
 
@@ -77,7 +77,7 @@ class OrangeApiTest extends TestCase
             );
 
             if ($message->isAuthorized()) {
-                $addresses = ['2250709474609']; // TODO: Add valid numbers for test
+                $addresses = ['225xxxxxxxxxx']; // TODO: Add valid numbers for test
 
                 foreach ($addresses as $k => $address) {
                     $response = $message
