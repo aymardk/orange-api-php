@@ -14,24 +14,21 @@ class Balance extends OrangeApi
         parent::__construct($authorization, $logPath);
     }
 
+    /**
+     * @throws \Exception
+     */
     protected function query(array $args): array
     {
         $data = [];
-        if ($args !== null) {
-            if (array_key_exists('country_code', $args)) {
-                $data['country'] = $args['country_code'];
-            }
+        if (array_key_exists('country_code', $args)) {
+            $data += ['country' => $args['country_code']];
         }
 
         return Requests::call(
-            'GET',
+            ['Authorization' => $this->authorization->getTokenType() . ' ' . $this->authorization->getAccessToken()],
+            'get',
             Endpoints::getContracts(),
             $data,
-            [
-                'Content-Type: application/json',
-                'Authorization: ' . $this->authorization->getTokenType() . ' ' . $this->authorization->getAccessToken()
-            ],
-            $this->authorization->getVerifyPeerSsl(),
             $this->logger
         );
     }
@@ -45,7 +42,7 @@ class Balance extends OrangeApi
     {
         return
             new BalanceResponse(
-                $this->attempt(['country_code' => $country_code], 200)['response'][0]
+                $this->attempt(['country_code' => $country_code], 200)[0]
             );
     }
 }

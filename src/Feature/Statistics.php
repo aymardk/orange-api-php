@@ -17,39 +17,41 @@ class Statistics extends OrangeApi
     /**
      * @param $args
      * @return array
+     * @throws \Exception
      */
     protected function query(array $args): array
     {
-        if (!is_array($args)) {
-            if (array_key_exists('country_code', $args)) {
-                $data['country'] = $args['country_code'];
-            }
-            if (array_key_exists('app_id', $args)) {
-                $data['appid'] = $args['app_id'];
-            }
+        $data = [];
+        if (array_key_exists('country_code', $args)) {
+            $data += ['country' => $args['country_code']];
+        }
+        if (array_key_exists('app_id', $args)) {
+            $data += ['appid' => $args['app_id']];
         }
 
         return Requests::call(
-            'GET',
+            ['Authorization' => $this->authorization->getTokenType() . ' ' . $this->authorization->getAccessToken()],
+            'get',
             Endpoints::getStatistics(),
-            $args,
-            [
-                'Content-Type: application/json',
-                'Authorization: ' . $this->authorization->getTokenType() . ' ' . $this->authorization->getAccessToken()
-            ],
-            $this->authorization->getVerifyPeerSsl(),
+            $data,
             $this->logger
         );
     }
 
     /**
-     * @param array $args ['country_code' => $country_code, 'app_id' => $app_id]
+     * @param string $country_code
+     * @param string|null $app_id
      * @return PartnerStatisticResponse
      * @throws \Exception
      */
     public function check(string $country_code, ?string $app_id = null): PartnerStatisticResponse
     {
         return
-            new PartnerStatisticResponse($this->attempt(['country_code' => $country_code, 'app_id' => $app_id], 200)['response']);
+            new PartnerStatisticResponse(
+                $this->attempt(
+                    ['country' => $country_code, 'appid' => $app_id],
+                    200
+                )
+            );
     }
 }

@@ -2,12 +2,11 @@
 
 namespace Aymardk\OrangeApiPhp\Core;
 
-use Aymardk\OrangeApiPhp\Core\File;
+use Cake\Http\Client;
 use Symfony\Component\Filesystem\Filesystem;
 
 class Authorization
 {
-    protected bool $verifyPeerSsl = true;
     protected ?string $clientSecret = null;
     protected ?string $accessToken = null;
     protected ?string $tokenType = null;
@@ -19,16 +18,14 @@ class Authorization
      * Authorization constructor.
      * @param string $clientId
      * @param string $clientSecret
-     * @param bool $verifyPeerSsl
      * @param string $logPath
      */
-    public function __construct(string $clientId, string $clientSecret, bool $verifyPeerSsl = true, string $logPath = 'tmp')
+    public function __construct(string $clientId, string $clientSecret, string $logPath = 'tmp')
     {
         $this->logPath = sprintf("%s/%s/%s", $logPath, $clientId, $this->logPathName);
 
         $this->clientId = $clientId;
         $this->clientSecret = $clientSecret;
-        $this->verifyPeerSsl = $verifyPeerSsl;
     }
 
     public function getClientId(): string
@@ -39,11 +36,6 @@ class Authorization
     public function getLogPath(): string
     {
         return $this->logPath;
-    }
-
-    public function getVerifyPeerSsl(): bool
-    {
-        return $this->verifyPeerSsl;
     }
 
     public function getAccessToken(): string
@@ -68,31 +60,35 @@ class Authorization
         $fs = new Filesystem();
 
         if ($this->hasToken($fs) === false) {
-            $callResponse = Requests::call(
-                'POST',
+            $client = new Client();
+            $result = $client->post(
                 Endpoints::getAuthentication(),
                 ['grant_type' => 'client_credentials'],
                 [
-                    'Accept: application/json',
-                    'Content-Type: application/x-www-form-urlencoded',
-                    "Authorization: Basic " . base64_encode("$this->clientId:$this->clientSecret"),
-                ],
-                $this->verifyPeerSsl
-            );
+                    'auth' => [
+                        'type' => 'basic',
+                        'username' => $this->clientId,
+                        'password' => $this->clientSecret,
+                    ]
+                ]);
 
-            if ((int)$callResponse['code'] !== 200) {
-                throw new \RuntimeException('There is an error!');
+            if (!$result->isSuccess()) {
+                throw new \RuntimeException($result->getJson()['message']);
             }
 
-            if (array_key_exists('access_token', $callResponse['response'])) {
-                $this->accessToken = $callResponse['response']['access_token'];
+            if (!in_array($result->getStatusCode(), [200, 201])) {
+                throw new \RuntimeException($result->getJson()['message']);
             }
 
-            if (array_key_exists('token_type', $callResponse['response'])) {
-                $this->tokenType = $callResponse['response']['token_type'];
+            if (array_key_exists('access_token', $result->getJson())) {
+                $this->accessToken = $result->getJson()['access_token'];
             }
 
-            $fs->dumpFile($this->logPath, json_encode($callResponse['response']));
+            if (array_key_exists('token_type', $result->getJson())) {
+                $this->tokenType = $result->getJson()['token_type'];
+            }
+
+            $fs->dumpFile($this->logPath, json_encode($result->getJson()));
         }
 
         return true;
@@ -112,10 +108,12 @@ class Authorization
                 if (!empty($line)) {
                     $json = json_decode(trim($line), true);
                     if (!array_key_exists('access_token', $json) || !array_key_exists('token_type', $json)) {
-                        throw new \RuntimeException("access_token or token_type not present in json authorize file.");
+                        throw new \RuntimeException("access_token/token_type not present.");
                     }
+
                     $this->accessToken = $json['access_token'];
                     $this->tokenType = $json['token_type'];
+
                     return true;
                 }
             }

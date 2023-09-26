@@ -13,16 +13,19 @@ class SMSMessage extends OrangeApi
     protected ?string $senderName = null;
     protected ?string $senderAddress = null;
 
-    private array $request;
+    private array $request = [];
 
     public function __construct(Authorization $authorization, string $logPath = null)
     {
         parent::__construct($authorization, $logPath);
     }
 
+    /**
+     * @throws \Exception
+     */
     protected function query(array $args): array
     {
-        $this->request = [
+        $this->request += [
             'senderAddress' => "tel:+$this->senderAddress",
             'address' => "tel:+$this->address",
             'outboundSMSTextMessage' => [
@@ -31,23 +34,20 @@ class SMSMessage extends OrangeApi
         ];
 
         if ($this->senderName !== null) {
-            $this->request['senderName'] = $this->senderName;
+            $this->request += ['senderName' => $this->senderName];
         }
 
-        $data = json_encode([
+        $data = [
             'outboundSMSMessageRequest' => $this->request
-        ], JSON_FORCE_OBJECT);
+        ];
 
         return Requests::call(
-            'POST',
+            [
+                'Authorization' => $this->authorization->getTokenType() . ' ' . $this->authorization->getAccessToken(),
+            ],
+            'post',
             Endpoints::getSmsMessaging($this->senderAddress),
             $data,
-            [
-                "Content-Type: application/json",
-                sprintf("Content-Length: %s", strlen($data)),
-                sprintf("Authorization: %s %s", $this->authorization->getTokenType(), $this->authorization->getAccessToken()),
-            ],
-            $this->authorization->getVerifyPeerSsl(),
             $this->logger
         );
     }

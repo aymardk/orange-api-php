@@ -2,6 +2,7 @@
 
 namespace Aymardk\OrangeApiPhp\Core;
 
+use Cake\Http\Client;
 use Monolog\Logger;
 
 class Requests
@@ -9,80 +10,36 @@ class Requests
     protected static ?Logger $logger = null;
 
     /**
-     * @param string $method Method POST|GET
-     * @param string $url
-     * @param $data
      * @param array $headers
-     * @param bool $verifyPeerSsl
+     * @param string $method Method post|get
+     * @param string $url
+     * @param array $data
      * @param Logger|null $logger
      * @return array
+     * @throws \Exception
      */
     public static function call(
+        array  $headers,
         string $method,
         string $url,
-        $data,
-        array $headers = [],
-        bool $verifyPeerSsl = true,
+        array  $data = [],
         Logger $logger = null
     ): array
     {
-        if (!in_array($method, ['POST', 'GET'])) {
-            throw new \RuntimeException('Method not acceptable');
-        }
-
-        $ch = curl_init();
-
-        if ($method === 'POST') {
-            curl_setopt($ch, CURLOPT_URL, $url);
-            curl_setopt($ch, CURLOPT_POST, true);
-            curl_setopt(
-                $ch,
-                CURLOPT_POSTFIELDS,
-                is_array($data) ? http_build_query($data) : $data
-            );
-        } else { // GET method
-            curl_setopt($ch, CURLOPT_URL, $url . ((!empty($data)) ? '?' . http_build_query($data) : ''));
-        }
-
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, $verifyPeerSsl);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-        if (!$result = curl_exec($ch)) {
-            if ($logger !== null) {
-                $logger->error(curl_error($ch));
-            }
-            trigger_error(curl_error($ch));
-        }
-
-        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        $response = json_decode($result, true);
-
-        curl_close($ch);
-
-        $return = $response4log = [
-            'code' => $httpCode,
-            'response' => $response
-        ];
-
-        foreach (['outboundSMSTextMessage', 'senderAddress'] as $unwanted) {
-            self::recursiveUnset($response4log, $unwanted);
-        }
+        $client = new Client();
+        $result = $client->$method(
+            $url,
+            json_encode($data),
+            ['headers' => $headers, 'type' => 'json']
+        );
 
         if ($logger !== null) {
-            $logger->log(in_array($httpCode, [200, 201]) ? Logger::DEBUG : Logger::ERROR, json_encode($response4log));
+            $logger->log(
+                (in_array($result->getStatusCode(), [200, 201]) ? Logger::DEBUG : Logger::ERROR),
+                json_encode($result->getJson())
+            );
         }
 
-        return $return;
-    }
-
-    private static function recursiveUnset(&$array, string $unwanted_key)
-    {
-        unset($array[$unwanted_key]);
-        foreach ($array as &$value) {
-            if (is_array($value)) {
-                self::recursiveUnset($value, $unwanted_key);
-            }
-        }
+        return $result->getJson();
     }
 }
