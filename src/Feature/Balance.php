@@ -42,7 +42,7 @@ class Balance extends OrangeApi
     {
         return
             new BalanceResponse(
-                $this->attempt(['country_code' => $country_code], 200)[0]
+                $this->attempt(['country_code' => $country_code], 200)
             );
     }
 }
