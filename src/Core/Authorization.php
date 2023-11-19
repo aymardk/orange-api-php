@@ -7,12 +7,39 @@ use Symfony\Component\Filesystem\Filesystem;
 
 class Authorization
 {
-    protected ?string $clientSecret = null;
-    protected ?string $accessToken = null;
-    protected ?string $tokenType = null;
-    protected ?string $clientId = null;
-    protected ?string $logPathName = 'authorize';
-    protected ?string $logPath;
+    private ?string $clientSecret;
+    private ?string $accessToken;
+    private ?string $tokenType;
+    private ?string $clientId;
+    private ?string $logPath;
+
+    /**
+     * @param Filesystem $fs
+     * @return bool
+     */
+    private function hasToken(Filesystem $fs): bool
+    {
+        if ($fs->exists($this->logPath)) {
+            $file = new File($this->logPath);
+
+            $iterator = $file->iterate();
+            foreach ($iterator as $line) {
+                if (!empty($line)) {
+                    $json = json_decode(trim($line), true);
+                    if (!array_key_exists('access_token', $json) || !array_key_exists('token_type', $json)) {
+                        throw new \RuntimeException("access_token/token_type not present.");
+                    }
+
+                    $this->accessToken = $json['access_token'];
+                    $this->tokenType = $json['token_type'];
+
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
 
     /**
      * Authorization constructor.
@@ -22,30 +49,14 @@ class Authorization
      */
     public function __construct(string $clientId, string $clientSecret, string $logPath = 'tmp')
     {
-        $this->logPath = sprintf("%s/%s/%s", $logPath, $clientId, $this->logPathName);
-
         $this->clientId = $clientId;
         $this->clientSecret = $clientSecret;
-    }
-
-    public function getClientId(): string
-    {
-        return $this->clientId;
-    }
-
-    public function getLogPath(): string
-    {
-        return $this->logPath;
-    }
-
-    public function getAccessToken(): string
-    {
-        return $this->accessToken;
-    }
-
-    public function getTokenType(): string
-    {
-        return $this->tokenType;
+        $this->logPath = sprintf(
+            "%s/%s/%s",
+            $logPath,
+            $this->clientId,
+            'authorize'
+        );
     }
 
     /**
@@ -95,30 +106,43 @@ class Authorization
     }
 
     /**
-     * @param Filesystem $fs
-     * @return bool
+     * @return string|null
      */
-    private function hasToken(Filesystem $fs): bool
+    public function getClientSecret(): ?string
     {
-        if ($fs->exists($this->logPath)) {
-            $file = new File($this->logPath);
-
-            $iterator = $file->iterate();
-            foreach ($iterator as $line) {
-                if (!empty($line)) {
-                    $json = json_decode(trim($line), true);
-                    if (!array_key_exists('access_token', $json) || !array_key_exists('token_type', $json)) {
-                        throw new \RuntimeException("access_token/token_type not present.");
-                    }
-
-                    $this->accessToken = $json['access_token'];
-                    $this->tokenType = $json['token_type'];
-
-                    return true;
-                }
-            }
-        }
-
-        return false;
+        return $this->clientSecret;
     }
+
+    /**
+     * @return string|null
+     */
+    public function getAccessToken(): ?string
+    {
+        return $this->accessToken;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getTokenType(): ?string
+    {
+        return $this->tokenType;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getClientId(): ?string
+    {
+        return $this->clientId;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getLogPath(): ?string
+    {
+        return $this->logPath;
+    }
+
 }

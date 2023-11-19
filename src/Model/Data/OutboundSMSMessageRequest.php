@@ -4,30 +4,61 @@ namespace Aymardk\OrangeApiPhp\Model\Data;
 
 class OutboundSMSMessageRequest
 {
-    public ?array $address;
-    public ?string $senderName;
-    public ?string $senderAddress;
-    public ?string $resourceURL;
-    public ?OutboundSMSTextMessage $outboundSMSTextMessage;
+    private ?OutboundSMSTextMessage $outboundSMSTextMessage;
+    private ?string $senderAddress;
+    private ?string $resourceURL;
+    private ?string $senderName;
+    private ?array $address;
 
-    public function __construct(array $args = [])
+    public function __construct(array $args)
     {
-        if (array_key_exists('address', $args)) {
-            $this->address = $args['address'];
-        }
-        if (array_key_exists('senderName', $args)) {
-            $this->senderName = $args['senderName'];
-        }
-        if (array_key_exists('resourceURL', $args)) {
-            $this->resourceURL = $args['resourceURL'];
-        }
-
-        // @deprecated
-        if (array_key_exists('senderAddress', $args)) {
-            $this->senderAddress = $args['senderAddress'];
-        }
-        if (array_key_exists('outboundSMSTextMessage', $args)) {
-            $this->outboundSMSTextMessage = new OutboundSMSTextMessage($args['outboundSMSTextMessage']);
-        }
+        $this->outboundSMSTextMessage = new OutboundSMSTextMessage(
+            $args['outboundSMSTextMessage']
+        ) ?? null;
+        $this->senderAddress = $args['senderAddress'] ?? null;
+        $this->resourceURL = $args['resourceURL'] ?? null;
+        $this->senderName = $args['senderName'] ?? null;
+        $this->address = $args['address'] ?? null;
     }
+
+    /**
+     * @return OutboundSMSTextMessage|null
+     */
+    public function getOutboundSMSTextMessage(): ?OutboundSMSTextMessage
+    {
+        return $this->outboundSMSTextMessage;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getSenderAddress(): ?string
+    {
+        return $this->senderAddress;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getResourceURL(): ?string
+    {
+        return $this->resourceURL;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getSenderName(): ?string
+    {
+        return $this->senderName;
+    }
+
+    /**
+     * @return array|null
+     */
+    public function getAddress(): ?array
+    {
+        return $this->address;
+    }
+
 }

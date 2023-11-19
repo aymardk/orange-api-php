@@ -2,6 +2,11 @@
 
 namespace Aymardk\OrangeApiPhp\Model\Data;
 
+use phpDocumentor\Reflection\DocBlock\Tags\Deprecated;
+
+/**
+ * @deprecated
+ */
 class Contract
 {
     public ?string $service;

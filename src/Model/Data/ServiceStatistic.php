@@ -2,6 +2,9 @@
 
 namespace Aymardk\OrangeApiPhp\Model\Data;
 
+/**
+ * @deprecated
+ */
 class ServiceStatistic
 {
     public ?string $country;

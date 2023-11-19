@@ -8,6 +8,7 @@ use Aymardk\OrangeApiPhp\Feature\PurchaseHistory;
 use Aymardk\OrangeApiPhp\Feature\SMSMessage;
 use Aymardk\OrangeApiPhp\Feature\Statistics;
 use Aymardk\OrangeApiPhp\Model\Data\BalanceData;
+use Aymardk\OrangeApiPhp\Model\Data\OutboundSMSMessageRequest;
 use Aymardk\OrangeApiPhp\Model\Data\PartnerStatisticData;
 use Aymardk\OrangeApiPhp\Model\Data\PurchaseOrderData;
 use Aymardk\OrangeApiPhp\Model\Response\BalanceResponse;
@@ -19,24 +20,23 @@ use PHPUnit\Framework\TestCase;
 
 class OrangeApiTest extends TestCase
 {
-    protected string $appId = ''; // TODO: Add correct appId
-    protected string $clientId = ''; // TODO: Add correct clientId
-    protected string $clientSecret = ''; // TODO: Add correct clientSecret
-    protected string $senderAdress = '225xxxxxxxxxx'; // TODO: Add correct senderAdress
-    protected string $messageLogPath = 'log';
-    protected string $logPath = 'tmp';
+    private Authorization $authorization;
 
-    /**
-     * @return Authorization
-     */
-    protected function getAuthorization(): Authorization
+    protected ?string $appId = 'LBjqup2ai1CJFMRC';
+    protected ?string $clientId = 'F0TAHPWjC7NHCKZBU9A30kbAJkUdWXhZ';
+    protected ?string $clientSecret = 'L9FA8aGbFeOcKOgw';
+    protected ?string $senderAddress = '2250000';
+    protected ?string $messageLogPath = 'log';
+    protected ?string $logPath = 'tmp';
+
+    protected function setUp(): void
     {
-        return
-            new Authorization(
-                $this->clientId,
-                $this->clientSecret,
-                $this->logPath
-            );
+        parent::setUp();
+        $this->authorization = new Authorization(
+            $this->clientId,
+            $this->clientSecret,
+            $this->logPath
+        );
     }
 
     public function testCredentials(): void
@@ -44,7 +44,7 @@ class OrangeApiTest extends TestCase
         $this->assertIsString($this->appId);
         $this->assertIsString($this->clientId);
         $this->assertIsString($this->clientSecret);
-        $this->assertIsString($this->senderAdress);
+        $this->assertIsString($this->senderAddress);
     }
 
     public function testLogPath(): void
@@ -59,137 +59,134 @@ class OrangeApiTest extends TestCase
         $this->assertDirectoryIsWritable($this->messageLogPath);
     }
 
-    public function testAuthorization(): void
-    {
-        $this->assertInstanceOf(
-            Authorization::class,
-            $this->getAuthorization()
-        );
-    }
-
+    /**
+     * @throws Exception
+     */
     public function testSendMessage(): void
     {
-        try {
-            $message = new SMSMessage($this->getAuthorization(), $this->messageLogPath);
-            $this->assertInstanceOf(
-                SMSMessage::class,
-                $message
-            );
+        $message = new SMSMessage($this->authorization, $this->messageLogPath);
+        $this->assertInstanceOf(
+            SMSMessage::class,
+            $message
+        );
 
+        $addresses = ['2250709474609'];
+        $senderName = 'WEB2SMS';
+
+        foreach ($addresses as $address) {
+            $this->assertIsBool($message->isAuthorized());
             if ($message->isAuthorized()) {
-                $addresses = ['225xxxxxxxxxx']; // TODO: Add valid numbers for test
+                $response = $message
+                    ->withSenderAddress($this->senderAddress)
+                    ->withSenderName($senderName)
+                    ->withAddress($address)
+                    ->send("Welcome guy. Juste un test d'envoi");
+                $this->assertInstanceOf(
+                    SMSMessageResponse::class,
+                    $response
+                );
 
-                foreach ($addresses as $k => $address) {
-                    $response = $message
-                        ->withSenderAddress($this->senderAdress)
-                        ->withAddress($address)
-                        ->withSenderName("WEB2SMS")
-                        ->send("Welcome guy. Juste un test d'envoi");
-
-                    $this->assertInstanceOf(
-                        SMSMessageResponse::class,
-                        $response
-                    );
-                }
+                $this->assertInstanceOf(
+                    OutboundSMSMessageRequest::class,
+                    $response->getOutboundSMSMessageRequest()
+                );
             }
-        } catch (Exception $e) {
-            $this->expectError();
         }
     }
 
+    /**
+     * @throws Exception
+     */
     public function testBalance(): void
     {
-        try {
-            $balance = new Balance($this->getAuthorization(), $this->messageLogPath);
+        $balance = new Balance($this->authorization, $this->messageLogPath);
 
+        $this->assertInstanceOf(
+            Balance::class,
+            $balance
+        );
+
+        if ($balance->isAuthorized()) {
+            $response = $balance->check('CIV');
             $this->assertInstanceOf(
-                Balance::class,
-                $balance,
-                "testBalance() #1"
+                BalanceResponse::class,
+                $response,
             );
 
-            if ($balance->isAuthorized()) {
-                $response = $balance->check('CIV');
+            $result = $response->getContracts();
+            $this->assertIsArray($result);
 
-                $this->assertInstanceOf(
-                    BalanceResponse::class,
-                    $response,
-                    "testBalance() #2"
-                );
+            $balance = $response->getContracts()[0];
+            $this->assertInstanceOf(
+                BalanceData::class,
+                $balance
+            );
 
-                $this->assertInstanceOf(
-                    BalanceData::class,
-                    $response->balance,
-                    "testBalance() #3"
-                );
-
-                $this->assertIsString($response->balance->status, "testBalance() #4");
-                $this->assertIsInt($response->balance->availableUnits, "testBalance() #5");
-            }
-        } catch (Exception $e) {
-            $this->expectError();
+            $this->assertIsString($balance->getStatus());
+            $this->assertIsInt($balance->getAvailableUnits());
+            $this->assertIsString($balance->getExpirationDate());
         }
     }
 
+    /**
+     * @throws Exception
+     */
     public function testStatistics(): void
     {
-        try {
-            $statistics = new Statistics($this->getAuthorization(), $this->messageLogPath);
+        $statistics = new Statistics($this->authorization, $this->messageLogPath);
+        $this->assertInstanceOf(
+            Statistics::class,
+            $statistics
+        );
+
+        if ($statistics->isAuthorized()) {
+            $response = $statistics->check('CIV', $this->appId);
+
             $this->assertInstanceOf(
-                Statistics::class,
+                PartnerStatisticResponse::class,
+                $response
+            );
+
+            $statistics = $response->getPartnerStatistics();
+            $this->assertInstanceOf(
+                PartnerStatisticData::class,
                 $statistics
             );
 
-            if ($statistics->isAuthorized()) {
-                $response = $statistics->check('CIV', $this->appId);
-
-                $this->assertInstanceOf(
-                    PartnerStatisticResponse::class,
-                    $response
-                );
-
-                $this->assertInstanceOf(
-                    PartnerStatisticData::class,
-                    $response->partnerStatistics
-                );
-
-                $this->assertIsString($response->partnerStatistics->developerId);
-            }
-        } catch (Exception $e) {
-            $this->expectError();
+            $this->assertIsString($statistics->getDeveloperId());
+            $this->assertIsArray($statistics->getStatistics());
         }
     }
 
+    /**
+     * @throws Exception
+     */
     public function testPurchaseOrders(): void
     {
-        try {
-            $orders = new PurchaseHistory($this->getAuthorization(), $this->messageLogPath);
+        $orders = new PurchaseHistory($this->authorization, $this->messageLogPath);
+        $this->assertInstanceOf(
+            PurchaseHistory::class,
+            $orders
+        );
+
+        if ($orders->isAuthorized()) {
+            $response = $orders->check('CIV');
+
             $this->assertInstanceOf(
-                PurchaseHistory::class,
-                $orders
+                PurchaseOrderResponse::class,
+                $response
             );
 
-            if ($orders->isAuthorized()) {
-                $response = $orders->check('CIV');
+            $this->assertIsArray(
+                $response->getPurchaseOrders()
+            );
 
+            foreach ($response->getPurchaseOrders() as $purchaseOrder) {
                 $this->assertInstanceOf(
-                    PurchaseOrderResponse::class,
-                    $response
+                    PurchaseOrderData::class,
+                    $purchaseOrder
                 );
-
-                $this->assertIsArray(
-                    $response->purchaseOrders
-                );
-
-                foreach ($response->purchaseOrders as $purchaseOrder) {
-                    $this->assertInstanceOf(
-                        PurchaseOrderData::class,
-                        $purchaseOrder
-                    );
-                }
             }
-        } catch (Exception $e) {
-            $this->expectError();
         }
     }
 }

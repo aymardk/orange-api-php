@@ -4,12 +4,19 @@ namespace Aymardk\OrangeApiPhp\Model\Data;
 
 class OutboundSMSTextMessage
 {
-    public ?string $message;
+    private ?string $message;
 
-    public function __construct(array $args = [])
+    public function __construct(array $args)
     {
-        if (array_key_exists('message', $args)) {
-            $this->message = $args['message'];
-        }
+        $this->message = $args['message'] ?? null;
     }
+
+    /**
+     * @return string|null
+     */
+    public function getMessage(): ?string
+    {
+        return $this->message;
+    }
+
 }

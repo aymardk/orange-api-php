@@ -4,6 +4,9 @@ namespace Aymardk\OrangeApiPhp\Model\Response;
 
 use Aymardk\OrangeApiPhp\Model\Data\PartnerContract;
 
+/**
+ * @deprecated
+ */
 class PartnerContractResponse
 {
     public ?PartnerContract $partnerContracts;

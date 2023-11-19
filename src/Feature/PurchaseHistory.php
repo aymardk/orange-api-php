@@ -6,6 +6,7 @@ use Aymardk\OrangeApiPhp\Core\Authorization;
 use Aymardk\OrangeApiPhp\Core\Endpoints;
 use Aymardk\OrangeApiPhp\Core\Requests;
 use Aymardk\OrangeApiPhp\Model\Response\PurchaseOrderResponse;
+use Exception;
 
 class PurchaseHistory extends OrangeApi
 {
@@ -15,7 +16,7 @@ class PurchaseHistory extends OrangeApi
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     protected function query(array $args): array
     {
@@ -24,19 +25,25 @@ class PurchaseHistory extends OrangeApi
             $data += ['country' => $args['country_code']];
         }
 
-        return Requests::call(
-            ['Authorization' => $this->authorization->getTokenType() . ' ' . $this->authorization->getAccessToken()],
+        $request = new Requests($this->logger);
+        return $request->call(
+            [
+                'Authorization' => sprintf(
+                    "%s %s",
+                    $this->authorization->getTokenType(),
+                    $this->authorization->getAccessToken()
+                )
+            ],
             'get',
             Endpoints::getPurchaseOrders(),
             $data,
-            $this->logger
         );
     }
 
     /**
      * @param string|null $country_code
      * @return PurchaseOrderResponse
-     * @throws \Exception
+     * @throws Exception
      */
     public function check(string $country_code = null): PurchaseOrderResponse
     {

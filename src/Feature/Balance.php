@@ -6,6 +6,7 @@ use Aymardk\OrangeApiPhp\Core\Authorization;
 use Aymardk\OrangeApiPhp\Core\Endpoints;
 use Aymardk\OrangeApiPhp\Core\Requests;
 use Aymardk\OrangeApiPhp\Model\Response\BalanceResponse;
+use Exception;
 
 class Balance extends OrangeApi
 {
@@ -15,7 +16,8 @@ class Balance extends OrangeApi
     }
 
     /**
-     * @throws \Exception
+     * @param array $args
+     * @return array
      */
     protected function query(array $args): array
     {
@@ -24,25 +26,29 @@ class Balance extends OrangeApi
             $data += ['country' => $args['country_code']];
         }
 
-        return Requests::call(
-            ['Authorization' => $this->authorization->getTokenType() . ' ' . $this->authorization->getAccessToken()],
+        $request = new Requests($this->logger);
+        return $request->call(
+            [
+                'Authorization' => sprintf(
+                    "%s %s",
+                    $this->authorization->getTokenType(),
+                    $this->authorization->getAccessToken()
+                ),
+            ],
             'get',
             Endpoints::getContracts(),
-            $data,
-            $this->logger
+            $data
         );
     }
 
     /**
      * @param string|null $country_code
      * @return BalanceResponse
-     * @throws \Exception
+     * @throws Exception
      */
     public function check(string $country_code = null): BalanceResponse
     {
-        return
-            new BalanceResponse(
-                $this->attempt(['country_code' => $country_code], 200)
-            );
+        $res = $this->attempt(['country_code' => $country_code], 200);
+        return new BalanceResponse($res);
     }
 }

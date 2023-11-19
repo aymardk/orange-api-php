@@ -7,39 +7,33 @@ use Monolog\Logger;
 
 class Requests
 {
-    protected static ?Logger $logger = null;
+    private Logger $logger;
+
+    public function __construct(Logger $logger)
+    {
+        $this->logger = $logger;
+    }
 
     /**
      * @param array $headers
      * @param string $method Method post|get
      * @param string $url
      * @param array $data
-     * @param Logger|null $logger
      * @return array
-     * @throws \Exception
      */
-    public static function call(
-        array  $headers,
-        string $method,
-        string $url,
-        array  $data = [],
-        Logger $logger = null
-    ): array
+    public function call(array $headers, string $method, string $url, array $data = []): array
     {
         $client = new Client();
-        $result = $client->$method(
-            $url,
-            json_encode($data),
-            ['headers' => $headers, 'type' => 'json']
+        $result = $client
+            ->$method($url, json_encode($data), ['headers' => $headers, 'type' => 'json']);
+
+        $json = $result->getJson();
+
+        $this->logger->log(
+            (in_array($result->getStatusCode(), [200, 201]) ? Logger::DEBUG : Logger::ERROR),
+            json_encode($json)
         );
 
-        if ($logger !== null) {
-            $logger->log(
-                (in_array($result->getStatusCode(), [200, 201]) ? Logger::DEBUG : Logger::ERROR),
-                json_encode($result->getJson())
-            );
-        }
-
-        return $result->getJson();
+        return $json;
     }
 }
