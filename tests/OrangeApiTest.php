@@ -22,9 +22,9 @@ class OrangeApiTest extends TestCase
 {
     private Authorization $authorization;
 
-    protected ?string $appId = 'LBjqup2ai1CJFMRC';
-    protected ?string $clientId = 'F0TAHPWjC7NHCKZBU9A30kbAJkUdWXhZ';
-    protected ?string $clientSecret = 'L9FA8aGbFeOcKOgw';
+    protected ?string $appId = ''; // todo
+    protected ?string $clientId = ''; // todo
+    protected ?string $clientSecret = ''; // todo
     protected ?string $senderAddress = '2250000';
     protected ?string $messageLogPath = 'log';
     protected ?string $logPath = 'tmp';
@@ -70,8 +70,9 @@ class OrangeApiTest extends TestCase
             $message
         );
 
-        $addresses = ['2250709474609'];
-        $senderName = 'WEB2SMS';
+        $addresses = ['']; // todo
+        $senderName = ''; // todo
+        $messageBody = ''; // todo
 
         foreach ($addresses as $address) {
             $this->assertIsBool($message->isAuthorized());
@@ -80,7 +81,7 @@ class OrangeApiTest extends TestCase
                     ->withSenderAddress($this->senderAddress)
                     ->withSenderName($senderName)
                     ->withAddress($address)
-                    ->send("Welcome guy. Juste un test d'envoi");
+                    ->send($messageBody);
                 $this->assertInstanceOf(
                     SMSMessageResponse::class,
                     $response
