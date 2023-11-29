@@ -20,16 +20,22 @@ abstract class OrangeApi
      */
     protected function attempt(array $args, int $response_code): array
     {
-        $res = $this->query($args);
-        if (array_key_exists('code', $res) && $res['code'] !== $response_code) {
-            if ((int)$res['code'] === 42) {
-                unlink($this->authorization->getLogPath());
-                if ($this->isAuthorized()) {
-                    $res = $this->attempt($args, $response_code);
+        if ($this->isAuthorized()) {
+            $res = $this->query($args);
+            if (array_key_exists('code', $res) && $res['code'] !== $response_code) {
+                if ((int)$res['code'] === 42) {
+                    if ($this->authorization->getLogPath() !== null) {
+                        unlink($this->authorization->getLogPath());
+                    }
+                    if ($this->isAuthorized()) {
+                        $res = $this->attempt($args, $response_code);
+                    }
                 }
             }
+            return $res;
+        } else {
+            return $this->attempt($args, $response_code);
         }
-        return $res;
     }
 
     /**
@@ -56,7 +62,7 @@ abstract class OrangeApi
     /**
      * @throws Exception
      */
-    public function isAuthorized(): bool
+    private function isAuthorized(): bool
     {
         return $this->authorization->init();
     }

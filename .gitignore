@@ -1,6 +1,9 @@
 
 /log/*
 /tmp/*
+/tests/
+/tests/*
+tests/*
 tests/log/*
 tests/tmp/*
 /vendor/*

@@ -7,7 +7,7 @@ use Monolog\Logger;
 
 class Requests
 {
-    private Logger $logger;
+    private ?Logger $logger;
 
     public function __construct(Logger $logger)
     {
@@ -29,10 +29,12 @@ class Requests
 
         $json = $result->getJson();
 
-        $this->logger->log(
-            (in_array($result->getStatusCode(), [200, 201]) ? Logger::DEBUG : Logger::ERROR),
-            json_encode($json)
-        );
+        if ($this->logger !== null) {
+            $this->logger->log(
+                (in_array($result->getStatusCode(), [200, 201]) ? Logger::DEBUG : Logger::ERROR),
+                json_encode($json)
+            );
+        }
 
         return $json;
     }

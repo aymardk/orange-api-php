@@ -22,9 +22,9 @@ class OrangeApiTest extends TestCase
 {
     private Authorization $authorization;
 
-    protected ?string $appId = ''; // todo
-    protected ?string $clientId = ''; // todo
-    protected ?string $clientSecret = ''; // todo
+    protected ?string $appId = null; // todo
+    protected ?string $clientId = 'F0TAHPWjC7NHCKZBU9A30kbAJkUdWXhZ'; // todo
+    protected ?string $clientSecret = 'L9FA8aGbFeOcKOgw'; // todo
     protected ?string $senderAddress = '2250000';
     protected ?string $messageLogPath = 'log';
     protected ?string $logPath = 'tmp';
@@ -41,7 +41,7 @@ class OrangeApiTest extends TestCase
 
     public function testCredentials(): void
     {
-        $this->assertIsString($this->appId);
+//        $this->assertIsString($this->appId);
         $this->assertIsString($this->clientId);
         $this->assertIsString($this->clientSecret);
         $this->assertIsString($this->senderAddress);
@@ -70,28 +70,26 @@ class OrangeApiTest extends TestCase
             $message
         );
 
-        $addresses = ['']; // todo
-        $senderName = ''; // todo
-        $messageBody = ''; // todo
+        $addresses = ['2250101668386']; // todo
+        $senderName = 'WEB2SMS'; // todo
+        $messageBody = 'Hello'; // todo
 
         foreach ($addresses as $address) {
-            $this->assertIsBool($message->isAuthorized());
-            if ($message->isAuthorized()) {
-                $response = $message
-                    ->withSenderAddress($this->senderAddress)
-                    ->withSenderName($senderName)
-                    ->withAddress($address)
-                    ->send($messageBody);
-                $this->assertInstanceOf(
-                    SMSMessageResponse::class,
-                    $response
-                );
+            $response = $message
+                ->withSenderAddress($this->senderAddress)
+                ->withSenderName($senderName)
+                ->withAddress($address)
+                ->send($messageBody);
 
-                $this->assertInstanceOf(
-                    OutboundSMSMessageRequest::class,
-                    $response->getOutboundSMSMessageRequest()
-                );
-            }
+            $this->assertInstanceOf(
+                SMSMessageResponse::class,
+                $response
+            );
+
+            $this->assertInstanceOf(
+                OutboundSMSMessageRequest::class,
+                $response->getOutboundSMSMessageRequest()
+            );
         }
     }
 
@@ -101,32 +99,29 @@ class OrangeApiTest extends TestCase
     public function testBalance(): void
     {
         $balance = new Balance($this->authorization, $this->messageLogPath);
-
         $this->assertInstanceOf(
             Balance::class,
             $balance
         );
 
-        if ($balance->isAuthorized()) {
-            $response = $balance->check('CIV');
-            $this->assertInstanceOf(
-                BalanceResponse::class,
-                $response,
-            );
+        $response = $balance->check('CIV');
+        $this->assertInstanceOf(
+            BalanceResponse::class,
+            $response,
+        );
 
-            $result = $response->getContracts();
-            $this->assertIsArray($result);
+        $result = $response->getContracts();
+        $this->assertIsArray($result);
 
-            $balance = $response->getContracts()[0];
-            $this->assertInstanceOf(
-                BalanceData::class,
-                $balance
-            );
+        $balance = $result[0];
+        $this->assertInstanceOf(
+            BalanceData::class,
+            $balance
+        );
 
-            $this->assertIsString($balance->getStatus());
-            $this->assertIsInt($balance->getAvailableUnits());
-            $this->assertIsString($balance->getExpirationDate());
-        }
+        $this->assertIsString($balance->getStatus());
+        $this->assertIsInt($balance->getAvailableUnits());
+        $this->assertIsString($balance->getExpirationDate());
     }
 
     /**
@@ -140,23 +135,21 @@ class OrangeApiTest extends TestCase
             $statistics
         );
 
-        if ($statistics->isAuthorized()) {
-            $response = $statistics->check('CIV', $this->appId);
+        $response = $statistics->check('CIV', $this->appId);
 
-            $this->assertInstanceOf(
-                PartnerStatisticResponse::class,
-                $response
-            );
+        $this->assertInstanceOf(
+            PartnerStatisticResponse::class,
+            $response
+        );
 
-            $statistics = $response->getPartnerStatistics();
-            $this->assertInstanceOf(
-                PartnerStatisticData::class,
-                $statistics
-            );
+        $statistics = $response->getPartnerStatistics();
+        $this->assertInstanceOf(
+            PartnerStatisticData::class,
+            $statistics
+        );
 
-            $this->assertIsString($statistics->getDeveloperId());
-            $this->assertIsArray($statistics->getStatistics());
-        }
+        $this->assertIsString($statistics->getDeveloperId());
+        $this->assertIsArray($statistics->getStatistics());
     }
 
     /**
@@ -170,24 +163,22 @@ class OrangeApiTest extends TestCase
             $orders
         );
 
-        if ($orders->isAuthorized()) {
-            $response = $orders->check('CIV');
+        $response = $orders->check('CIV');
 
+        $this->assertInstanceOf(
+            PurchaseOrderResponse::class,
+            $response
+        );
+
+        $this->assertIsArray(
+            $response->getPurchaseOrders()
+        );
+
+        foreach ($response->getPurchaseOrders() as $purchaseOrder) {
             $this->assertInstanceOf(
-                PurchaseOrderResponse::class,
-                $response
+                PurchaseOrderData::class,
+                $purchaseOrder
             );
-
-            $this->assertIsArray(
-                $response->getPurchaseOrders()
-            );
-
-            foreach ($response->getPurchaseOrders() as $purchaseOrder) {
-                $this->assertInstanceOf(
-                    PurchaseOrderData::class,
-                    $purchaseOrder
-                );
-            }
         }
     }
 }
